@@ -12,23 +12,28 @@ final class LoginViewController: UIViewController {
     
     private var loginTextField: UITextField = {
         var loginTextField = UITextField()
+        let spacerView = UIView(frame:CGRect(x: 0, y: 0, width: 10, height: 10))
         loginTextField.placeholder = "Enter username"
         loginTextField.textColor = .systemGreen
-        loginTextField.textAlignment = .center
         loginTextField.layer.cornerRadius = 5
         loginTextField.backgroundColor = .white
         loginTextField.translatesAutoresizingMaskIntoConstraints = false
+        loginTextField.leftViewMode = UITextField.ViewMode.always
+        loginTextField.leftView = spacerView
         return loginTextField
     }()
     
     private var passwordTextField: UITextField = {
         var passwordTextField = UITextField()
+        let spacerView = UIView(frame:CGRect(x: 0, y: 0, width: 10, height: 10))
         passwordTextField.placeholder = "Enter password"
         passwordTextField.textColor = .systemGreen
-        passwordTextField.textAlignment = .center
         passwordTextField.layer.cornerRadius = 5
         passwordTextField.backgroundColor = .white
         passwordTextField.translatesAutoresizingMaskIntoConstraints = false
+        passwordTextField.isSecureTextEntry = true
+        passwordTextField.leftViewMode = UITextField.ViewMode.always
+        passwordTextField.leftView = spacerView
         return passwordTextField
     }()
     
@@ -49,7 +54,6 @@ final class LoginViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .green
         configureView()
         setupConstraints()
     }
@@ -117,7 +121,7 @@ final class LoginViewController: UIViewController {
                 y: bounds.origin.y,
                 width: bounds.width + 100,
                 height: bounds.height)
-
+            
             self.signInButton.titleLabel?.bounds = CGRect(
                 x: bounds.origin.x - 30,
                 y: bounds.height / 2,

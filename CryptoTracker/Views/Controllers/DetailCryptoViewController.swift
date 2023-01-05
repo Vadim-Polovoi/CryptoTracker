@@ -15,6 +15,15 @@ class DetailCryptoViewController: UIViewController {
         symbolLabel.text = model.symbol
         priceLabel.text = model.priceUsd.formatToString() + " $"
         super.init(nibName: nil, bundle: nil)
+        ApiManager.shared.getCryptoIcon(cryptoSymbol: model.symbol.lowercased()) { [weak self] dataIcon in
+            DispatchQueue.main.async {
+                guard let image = UIImage(data: dataIcon) else {
+                    self?.iconImageView.image = UIImage(named: "genericIcon")
+                    return
+                }
+                self?.iconImageView.image = image
+            }
+        }
     }
     
     required init?(coder: NSCoder) {

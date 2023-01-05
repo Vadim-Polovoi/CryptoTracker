@@ -105,13 +105,22 @@ class CryptoTableViewCell: UITableViewCell {
         NSLayoutConstraint.activate(priceLabelConstraints)
         NSLayoutConstraint.activate(percentChangeUsdLabelConstraints)
     }
-
+    
     func configure(with model: CryptoModel) {
         nameLabel.text = model.name
         symbolLabel.text = model.symbol
         priceLabel.text = model.priceUsd.formatToString() + " $"
         percentChangeUsdLabel.text = model.percentChangeUsdLast24Hours.formatToString() + " %"
         percentChangeUsdLabel.textColor = model.percentChangeUsdLast24Hours < 0 ? .systemRed : .systemGreen
+        ApiManager.shared.getCryptoIcon(cryptoSymbol: model.symbol.lowercased()) { [weak self] dataIcon in
+            DispatchQueue.main.async {
+                guard let image = UIImage(data: dataIcon) else {
+                    self?.iconImageView.image = UIImage(named: "genericIcon")
+                    return
+                }
+                self?.iconImageView.image = image
+            }
+        }
     }
 }
 

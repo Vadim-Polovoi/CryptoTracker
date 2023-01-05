@@ -36,9 +36,9 @@ final class CryptoViewModel: MVVMProtocolIn, MVVMProtocolOut {
     
     func getAllCryptoData() {
         let asyncGroup = DispatchGroup()
-        for cryptoName in ApiManager.CryptoNames.allCases {
+        for cryptoSymbol in ApiManager.CryptoSymbols.allCases {
             asyncGroup.enter()
-            ApiManager.shared.getCryptoData(cryptoName: cryptoName.rawValue) { [weak self] result in
+            ApiManager.shared.getCryptoData(cryptoSymbol: cryptoSymbol.rawValue) { [weak self] result in
                 switch result {
                 case .success(let (_, crypto)):
                     self?.cryptos.append(CryptoModel(crypto: crypto))

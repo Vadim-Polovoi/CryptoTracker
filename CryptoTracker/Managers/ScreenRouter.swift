@@ -12,7 +12,7 @@ final class ScreenRouter {
     
     static let shared = ScreenRouter()
     
-    private lazy var window = UIWindow(frame: UIScreen.main.bounds)
+    lazy var window = UIWindow(frame: UIScreen.main.bounds)
     
     func showLoginScreen() {
         window.rootViewController = LoginViewController()

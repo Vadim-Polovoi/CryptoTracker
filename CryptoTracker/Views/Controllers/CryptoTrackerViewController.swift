@@ -13,12 +13,14 @@ class CryptoTrackerViewController: UIViewController {
     private let tableView: UITableView = {
         let tableView = UITableView(frame: .zero, style: .grouped)
         tableView.register(CryptoTableViewCell.self, forCellReuseIdentifier: CryptoTableViewCell.identifier)
+        tableView.translatesAutoresizingMaskIntoConstraints = false
         return tableView
     }()
     
     private let activityIndicator: UIActivityIndicatorView = {
         let activityIndicator = UIActivityIndicatorView(style: .large)
         activityIndicator.backgroundColor = UIColor(white: 0, alpha: 0.4)
+        activityIndicator.translatesAutoresizingMaskIntoConstraints = false
         return activityIndicator
     }()
     
@@ -41,15 +43,11 @@ class CryptoTrackerViewController: UIViewController {
         listenViewModel()
     }
     
-    override func viewDidLayoutSubviews() {
-        tableView.frame = view.bounds
-        activityIndicator.frame = view.bounds
-    }
-    
     private func configureView() {
         configureNavigationBar()
         view.addSubview(tableView)
         view.addSubview(activityIndicator)
+        setupConstraints()
         tableView.dataSource = self
         tableView.delegate = self
     }
@@ -89,6 +87,23 @@ class CryptoTrackerViewController: UIViewController {
             alert.dismiss(animated: true)
         })
         present(alert, animated: true)
+    }
+    
+    private func setupConstraints() {
+        let tableViewConstraints = [
+            tableView.topAnchor.constraint(equalTo: view.topAnchor),
+            tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+        ]
+        let activityIndicatorConstraints = [
+            activityIndicator.topAnchor.constraint(equalTo: view.topAnchor),
+            activityIndicator.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            activityIndicator.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            activityIndicator.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+        ]
+        NSLayoutConstraint.activate(tableViewConstraints)
+        NSLayoutConstraint.activate(activityIndicatorConstraints)
     }
     
     @objc func sortCryptos() {

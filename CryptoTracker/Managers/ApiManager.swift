@@ -14,16 +14,16 @@ final class ApiManager {
     
     private let baseUrl = "data.messari.io/api/v1/assets/"
     
-    enum CryptoNames: String, CaseIterable {
-        case btc = "btc"
-        case eth = "eth"
-        case tron = "tron"
-        case polkadot = "polkadot"
-        case dogecoin = "dogecoin"
-        case tether = "tether"
-        case stellar = "stellar"
-        case cardano = "cardano"
-        case xrp = "xrp"
+    enum CryptoSymbols: String, CaseIterable {
+        case btc
+        case eth
+        case trx
+        case dot
+        case doge
+        case usdt
+        case xlm
+        case ada
+        case xrp
     }
     
     private func makeUrl(method: String) -> URL? {
@@ -32,9 +32,9 @@ final class ApiManager {
         component.path = baseUrl + method + "/metrics"
         return component.url
     }
-
-    public func getCryptoData(cryptoName: String, completion: @escaping (Result<(String, Crypto), Error>) -> Void) {
-        guard let cryptoUrl = makeUrl(method: cryptoName) else {
+    
+    public func getCryptoData(cryptoSymbol: String, completion: @escaping (Result<(String, Crypto), Error>) -> Void) {
+        guard let cryptoUrl = makeUrl(method: cryptoSymbol) else {
             DispatchQueue.main.async {
                 completion(.failure(NetworkError.wrongUrl))
             }
@@ -43,30 +43,32 @@ final class ApiManager {
         var request = URLRequest(url: cryptoUrl)
         request.httpMethod = "GET"
         let task = URLSession.shared.dataTask(with: request) { data, response, error in
-            if let error = error {
-                DispatchQueue.main.async {
+            DispatchQueue.main.async {
+                if let error = error {
                     completion(.failure(error))
                 }
-                return
-            }
-            guard let response = response as? HTTPURLResponse,
-                  (200...299).contains(response.statusCode) else {
-                DispatchQueue.main.async {
+                guard let response = response as? HTTPURLResponse,
+                      (200...299).contains(response.statusCode) else {
                     completion(.failure(NetworkError.wrongStatusCode))
+                    return
                 }
-                return
-            }
-            if let data = data,
-               let dataString = String(data: data, encoding: .utf8),
-               let cryptoResponse = try? JSONDecoder().decode(Crypto.self, from: data) {
-                DispatchQueue.main.async {
+                if let data = data,
+                   let dataString = String(data: data, encoding: .utf8),
+                   let cryptoResponse = try? JSONDecoder().decode(Crypto.self, from: data) {
                     completion(.success((dataString, cryptoResponse)))
-                }
-            } else {
-                DispatchQueue.main.async {
+                } else {
                     completion(.failure(NetworkError.wrongData))
                 }
             }
+        }
+        task.resume()
+    }
+    
+    public func getCryptoIcon(cryptoSymbol: String, completion: @escaping (Data) -> Void) {
+        guard let cryptoIconUrl = URL(string: "https://cryptoicons.org/api/icon/\(cryptoSymbol)/128") else { return }
+        let task = URLSession.shared.dataTask(with: cryptoIconUrl) { data, _, _ in
+            guard let data = data else { return }
+                completion(data)
         }
         task.resume()
     }
