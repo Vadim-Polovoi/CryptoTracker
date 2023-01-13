@@ -1,6 +1,6 @@
 # CryptoWallet
 
-### Architecture - MVVM(closure) + C
+### Architecture - MVVM(closure)
 
 ### Technologies:
 - UIKit
